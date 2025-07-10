@@ -1,0 +1,6 @@
+@JirAutomate_HostAddress = http://localhost:5208
+
+GET {{JirAutomate_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

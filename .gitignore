@@ -1,0 +1,26 @@
+# Build artifacts
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# User-specific files
+*.userprefs
+*.csproj.user
+
+# Dotnet environment
+.env
+JirAutomate/.env
+
+# Logs
+*.log
+
+# JetBrains Rider
+.idea/
+
+# Others
+*.db
+*.sqlite

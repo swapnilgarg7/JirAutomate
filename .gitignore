@@ -24,3 +24,5 @@ JirAutomate/.env
 # Others
 *.db
 *.sqlite
+
+ideas.txt

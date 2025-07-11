@@ -1,4 +1,7 @@
 
+using JirAutomate.Services;
+using Microsoft.AspNetCore.Http.Features;
+
 namespace JirAutomate
 {
     public class Program
@@ -7,9 +10,14 @@ namespace JirAutomate
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
+            });
             builder.Services.AddControllers();          
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<JiraService>();
+            builder.Services.AddScoped<GeminiService>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors(options =>

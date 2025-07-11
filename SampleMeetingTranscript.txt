@@ -1,0 +1,11 @@
+Team Standup - July 8, 2025
+
+Swapnil mentioned we need to fix the login bug affecting enterprise users by Friday.
+
+Priya will work on the PDF export feature for the analytics dashboard.
+
+Ravi is assigned to integrate the Gemini API into the backend by next week.
+
+Also discussed the need to set up a CI pipeline for automatic testing — assign this to Anjali.
+
+Finally, we need to document the API endpoints — Swapnil will handle that.

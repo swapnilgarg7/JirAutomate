@@ -35,20 +35,34 @@ public class JiraService
         var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_email}:{_apiToken}"));
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
 
-        var accountId = await GetAccountIdFromEmail(request.JiraDomain, request.AssigneeEmail);
-        if (string.IsNullOrWhiteSpace(accountId)) throw new Exception("Assignee not found");
+        string? accountId = null;
 
-        var payload = new
+        if (!string.IsNullOrWhiteSpace(request.AssigneeEmail))
         {
-            fields = new
+            try
             {
-                project = new { key = request.ProjectKey },
-                summary = request.Summary,
-                description = request.Description,
-                issuetype = new { name = request.IssueType },
-                assignee = new { id = accountId }
+                accountId = await GetAccountIdFromEmail(request.JiraDomain, request.AssigneeEmail);
             }
+            catch
+            {
+                Console.WriteLine($"⚠️ Failed to get accountId for {request.AssigneeEmail}, skipping assignee.");
+            }
+        }
+
+        var fields = new Dictionary<string, object>
+        {
+            ["project"] = new { key = request.ProjectKey },
+            ["summary"] = request.Summary,
+            ["description"] = request.Description,
+            ["issuetype"] = new { name = request.IssueType }
         };
+
+        if (!string.IsNullOrWhiteSpace(accountId))
+        {
+            fields["assignee"] = new { id = accountId };
+        }
+
+        var payload = new { fields };
 
         var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         var url = $"https://{request.JiraDomain}/rest/api/2/issue";
@@ -60,4 +74,5 @@ public class JiraService
 
         return responseBody;
     }
+
 }

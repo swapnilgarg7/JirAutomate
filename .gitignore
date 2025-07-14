@@ -26,3 +26,6 @@ JirAutomate/.env
 *.sqlite
 
 ideas.txt
+
+#frontend
+/frontend/src/environments/

@@ -50,7 +50,7 @@ JIRA_EMAIL=your_email@domain.com
 JIRA_API=your_jira_api_token
 ```
 
-#### ✅ Runs at: `https://localhost:7238`
+#### ✅ Runs at: `http://localhost:5208`
 
 ---
 
@@ -66,7 +66,7 @@ ng serve
 ```
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:7238/api'
+  apiUrl: 'http://localhost:5208/api'
 };
 ```
 

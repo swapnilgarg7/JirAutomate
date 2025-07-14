@@ -1,0 +1,12 @@
+<h2>Upload Transcript</h2>
+<input type="file" (change)="onFileSelect($event)" />
+<button mat-raised-button color="primary" (click)="upload()">Upload</button>
+
+<div *ngIf="tickets.length > 0">
+  <h3>Generated Tickets</h3>
+  <mat-card *ngFor="let ticket of tickets">
+    <mat-card-title>{{ ticket.summary }}</mat-card-title>
+    <mat-card-content>{{ ticket.description }}</mat-card-content>
+    <button mat-button color="accent" (click)="submit(ticket)">Create Jira Ticket</button>
+  </mat-card>
+</div>

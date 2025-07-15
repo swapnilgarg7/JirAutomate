@@ -13,28 +13,54 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class Transcript {
   file!: File;
-tickets: TicketRequest[] = [];
+  tickets: TicketRequest[] = [];
+  loading = false;
 
-constructor(private jiraService: JiraService) {}
+  constructor(private jira: JiraService) {}
 
-onFileSelect(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files?.length) this.file = input.files[0];
-}
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) this.file = input.files[0];
+  }
 
-upload() {
-  if (!this.file) return;
-  this.jiraService.uploadTranscript(this.file).subscribe(res => {
-    this.tickets = res;
-  });
-}
+  upload() {
+    if (!this.file) return;
+    this.loading = true;
+    this.jira.uploadTranscript(this.file).subscribe({
+      next: (res) => {
+        this.tickets = res;
+        this.loading = false;
+         // Reset form
+          this.tickets = [];
+          this.file = undefined!;
+          (document.querySelector('input[type="file"]') as HTMLInputElement).value = '';
+      },
+      error: () => {
+        alert('❌ Failed to extract tickets');
+        this.loading = false;
+      }
+    });
+  }
 
-submit(ticket: TicketRequest) {
-  this.jiraService.createTicket(ticket).subscribe({
-    next: () => alert('✅ Ticket created!'),
-    error: () => alert('❌ Failed to create ticket.')
-  });
-}
-
-
+  submitAll() {
+    this.loading = true;
+    let completed = 0;
+    for (const ticket of this.tickets) {
+      console.log(ticket);
+      ticket.assigneeName = ticket.assigneeName || '';
+      this.jira.createTicket(ticket).subscribe({
+        next: () => {
+          completed++;
+          if (completed === this.tickets.length) {
+            alert('✅ All tickets created!');
+            this.loading = false;
+          }
+        },
+        error: () => {
+          alert('❌ Failed to create one or more tickets.');
+          this.loading = false;
+        }
+      });
+    }
+  }
 }

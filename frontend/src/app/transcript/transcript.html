@@ -1,12 +1,23 @@
-<h2>Upload Transcript</h2>
-<input type="file" (change)="onFileSelect($event)" />
-<button mat-raised-button color="primary" (click)="upload()">Upload</button>
+<h1>Upload Transcript</h1>
+<input type="file" (change)="onFileChange($event)" />
+<button (click)="upload()">Extract Tickets</button>
 
-<div *ngIf="tickets.length > 0">
-  <h3>Generated Tickets</h3>
-  <mat-card *ngFor="let ticket of tickets">
-    <mat-card-title>{{ ticket.summary }}</mat-card-title>
-    <mat-card-content>{{ ticket.description }}</mat-card-content>
-    <button mat-button color="accent" (click)="submit(ticket)">Create Jira Ticket</button>
-  </mat-card>
+<hr />
+
+<div *ngIf="tickets.length">
+  <h2>Edit Tickets</h2>
+  <form *ngFor="let ticket of tickets; let i = index">
+    <div style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
+      <label>Summary:</label>
+      <input [(ngModel)]="ticket.summary" name="summary{{i}}" /><br />
+
+      <label>Description:</label><br />
+      <textarea [(ngModel)]="ticket.description" name="desc{{i}}" rows="3"></textarea><br />
+
+      <label>Assignee Email:</label>
+      <input [(ngModel)]="ticket.assigneeEmail" name="email{{i}}" /><br />
+    </div>
+  </form>
+
+  <button (click)="submitAll()" [disabled]="loading">Submit All to Jira</button>
 </div>

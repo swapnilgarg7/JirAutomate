@@ -30,7 +30,6 @@ public class TranscriptController : ControllerBase
 
         var tickets = await _geminiService.ExtractTicketsFromTranscript(transcript);
 
-        var created = new List<string>();
         foreach (var ticket in tickets)
         {
             ticket.JiraDomain ??= "swapnilgarg.atlassian.net";
@@ -44,11 +43,8 @@ public class TranscriptController : ControllerBase
             ticket.AssigneeEmail ??= "";
             ticket.Summary ??= "Sample Ticket";
             ticket.Description ??= "Sample Ticket Description";
-
-            var res = await _jiraService.CreateTicket(ticket);
-            created.Add(res);
         }
 
-        return Ok(new { count = created.Count, results = created });
+        return Ok(tickets);
     }
 }

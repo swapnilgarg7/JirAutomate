@@ -18,6 +18,8 @@ namespace JirAutomate
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<JiraService>();
             builder.Services.AddScoped<GeminiService>();
+            builder.Services.AddSingleton<UserService>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors(options =>

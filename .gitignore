@@ -27,3 +27,5 @@ JirAutomate/.env
 
 ideas.txt
 
+#frontend
+frontend/dist/

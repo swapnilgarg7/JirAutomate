@@ -1,10 +1,17 @@
 <div class="auth-container">
+  <!-- Header -->
+  <div class="title">
+    <h1>JirAutomate</h1>
+    <p class="title-description">An AI-powered meeting assistant that extracts action items from transcripts and creates Jira tickets instantly</p>
+  </div>
+
+  <!-- Auth Card -->
   <div class="auth-card">
     <div class="auth-header">
       <h2 *ngIf="!isLogin">Create Account</h2>
       <h2 *ngIf="isLogin">Welcome Back</h2>
       <p class="auth-subtitle">
-        {{ isLogin ? 'Sign in to your account' : 'Sign up for a new account' }}
+        {{ isLogin ? 'Log in to your account' : 'Sign up for a new account' }}
       </p>
     </div>
 
@@ -59,10 +66,10 @@
         [disabled]="authForm.invalid || isLoading"
         [class.loading]="isLoading"
       >
-        <span *ngIf="!isLoading">{{ isLogin ? 'Sign In' : 'Create Account' }}</span>
+        <span *ngIf="!isLoading">{{ isLogin ? 'Log In' : 'Create Account' }}</span>
         <span *ngIf="isLoading" class="loading-spinner">
           <span class="spinner"></span>
-          {{ isLogin ? 'Signing In...' : 'Creating Account...' }}
+          {{ isLogin ? 'Logging In...' : 'Creating Account...' }}
         </span>
       </button>
     </form>
@@ -70,9 +77,14 @@
     <div class="auth-footer">
       <p>
         <a href="#" (click)="toggleMode(); $event.preventDefault()" class="toggle-link">
-          {{ isLogin ? 'Don\'t have an account? Sign up' : 'Already have an account? Sign in' }}
+          {{ isLogin ? 'Don\'t have an account? Sign up' : 'Already have an account? Log in' }}
         </a>
       </p>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>Created by Swapnil Garg</p>
+  </footer>
 </div>

@@ -1,15 +1,78 @@
-<h2 *ngIf="!isLogin">Register</h2>
-<h2 *ngIf="isLogin">Login</h2>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2 *ngIf="!isLogin">Create Account</h2>
+      <h2 *ngIf="isLogin">Welcome Back</h2>
+      <p class="auth-subtitle">
+        {{ isLogin ? 'Sign in to your account' : 'Sign up for a new account' }}
+      </p>
+    </div>
 
-<form (ngSubmit)="submit()">
-  <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required />
-  <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required />
-  <button type="submit">{{ isLogin ? 'Login' : 'Register' }}</button>
-</form>
+    <form (ngSubmit)="submit()" #authForm="ngForm" class="auth-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+          type="email" 
+          id="email"
+          [(ngModel)]="email" 
+          name="email" 
+          placeholder="Enter your email" 
+          required 
+          email
+          #emailInput="ngModel"
+          class="form-input"
+          [class.error]="emailInput.invalid && emailInput.touched"
+        />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="error-message">
+          <span *ngIf="emailInput.errors?.['required']">Email is required</span>
+          <span *ngIf="emailInput.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
 
-<p>
-  <a href="#" (click)="toggleMode(); $event.preventDefault()">
-    {{ isLogin ? 'Don\'t have an account? Register' : 'Already have an account? Login' }}
-  </a>
-</p>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password"
+          [(ngModel)]="password" 
+          name="password" 
+          placeholder="Enter your password" 
+          required 
+          minlength="6"
+          #passwordInput="ngModel"
+          class="form-input"
+          [class.error]="passwordInput.invalid && passwordInput.touched"
+        />
+        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message">
+          <span *ngIf="passwordInput.errors?.['required']">Password is required</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
 
+      <div *ngIf="errorMessage" class="error-message general-error">
+        {{ errorMessage }}
+      </div>
+
+      <button 
+        type="submit" 
+        class="submit-btn"
+        [disabled]="authForm.invalid || isLoading"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">{{ isLogin ? 'Sign In' : 'Create Account' }}</span>
+        <span *ngIf="isLoading" class="loading-spinner">
+          <span class="spinner"></span>
+          {{ isLogin ? 'Signing In...' : 'Creating Account...' }}
+        </span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>
+        <a href="#" (click)="toggleMode(); $event.preventDefault()" class="toggle-link">
+          {{ isLogin ? 'Don\'t have an account? Sign up' : 'Already have an account? Sign in' }}
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

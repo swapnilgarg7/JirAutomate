@@ -1,23 +1,172 @@
-<h1>Upload Transcript</h1>
-<input type="file" (change)="onFileChange($event)" />
-<button (click)="upload()">Extract Tickets</button>
+<div class="transcript-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Transcript Analysis</h1>
+    <p class="subtitle">Upload your transcript to automatically extract and manage Jira tickets</p>
+  </div>
 
-<hr />
+  <!-- File Upload Section -->
+  <div class="upload-section">
+    <div class="upload-card">
+      <h2>Upload Transcript</h2>
+      
+      <!-- Drag & Drop Area -->
+      <div 
+        class="file-drop-zone" 
+        [class.drag-over]="dragOver"
+        [class.has-file]="file"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <div class="drop-zone-content">
+          <div class="file-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10,9 9,9 8,9"/>
+            </svg>
+          </div>
+          
+          <div *ngIf="!file" class="drop-zone-text">
+            <p class="primary-text">Drop your transcript file here</p>
+            <p class="secondary-text">or click to browse</p>
+            <p class="format-text">Supports TXT, PDF, CSV files up to 10MB</p>
+          </div>
+          
+          <div *ngIf="file" class="file-info">
+            <p class="file-name">{{ getFileName() }}</p>
+            <p class="file-size">{{ getFileSize() }}</p>
+          </div>
+        </div>
+        
+        <input 
+          type="file" 
+          class="file-input" 
+          (change)="onFileChange($event)"
+          accept=".txt,.pdf,.csv"
+        />
+      </div>
 
-<div *ngIf="tickets.length">
-  <h2>Edit Tickets</h2>
-  <form *ngFor="let ticket of tickets; let i = index">
-    <div style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
-      <label>Summary:</label>
-      <input [(ngModel)]="ticket.summary" name="summary{{i}}" /><br />
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        {{ errorMessage }}
+      </div>
 
-      <label>Description:</label><br />
-      <textarea [(ngModel)]="ticket.description" name="desc{{i}}" rows="3"></textarea><br />
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
 
-      <label>Assignee Email:</label>
-      <input [(ngModel)]="ticket.assigneeEmail" name="email{{i}}" /><br />
+      <!-- Upload Button -->
+      <button 
+        class="upload-btn" 
+        (click)="upload()"
+        [disabled]="!file || uploadProgress"
+        [class.loading]="uploadProgress"
+      >
+        <span *ngIf="!uploadProgress" class="btn-content">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7,10 12,15 17,10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Extract Tickets
+        </span>
+        <span *ngIf="uploadProgress" class="btn-loading">
+          <span class="spinner"></span>
+          Processing...
+        </span>
+      </button>
     </div>
-  </form>
+  </div>
 
-  <button (click)="submitAll()" [disabled]="loading">Submit All to Jira</button>
+  <!-- Tickets Section -->
+  <div *ngIf="tickets.length" class="tickets-section">
+    <div class="tickets-header">
+      <h2>Edit Tickets</h2>
+      <span class="ticket-count">{{ tickets.length }} ticket{{ tickets.length === 1 ? '' : 's' }} extracted</span>
+    </div>
+
+    <div class="tickets-grid">
+      <div *ngFor="let ticket of tickets; let i = index" class="ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-number">Ticket #{{ i + 1 }}</span>
+          <button 
+            class="remove-btn" 
+            (click)="removeTicket(i)"
+            title="Remove ticket"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <form class="ticket-form">
+          <div class="form-group">
+            <label for="summary{{i}}">Summary</label>
+            <input 
+              id="summary{{i}}"
+              [(ngModel)]="ticket.summary" 
+              name="summary{{i}}" 
+              class="form-input"
+              placeholder="Enter ticket summary"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="desc{{i}}">Description</label>
+            <textarea 
+              id="desc{{i}}"
+              [(ngModel)]="ticket.description" 
+              name="desc{{i}}" 
+              class="form-textarea"
+              rows="4"
+              placeholder="Enter ticket description"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="email{{i}}">Assignee Email</label>
+            <input 
+              id="email{{i}}"
+              [(ngModel)]="ticket.assigneeEmail" 
+              name="email{{i}}" 
+              class="form-input"
+              type="email"
+              placeholder="assignee@company.com"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Submit All Button -->
+    <div class="submit-section">
+      <button 
+        class="submit-all-btn" 
+        (click)="submitAll()" 
+        [disabled]="loading || submitProgress"
+        [class.loading]="submitProgress"
+      >
+        <span *ngIf="!submitProgress" class="btn-content">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22,4 12,14.01 9,11.01"/>
+          </svg>
+          Submit All to Jira
+        </span>
+        <span *ngIf="submitProgress" class="btn-loading">
+          <span class="spinner"></span>
+          Creating tickets...
+        </span>
+      </button>
+    </div>
+  </div>
 </div>

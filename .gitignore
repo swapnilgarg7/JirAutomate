@@ -29,3 +29,4 @@ ideas.txt
 
 #frontend
 frontend/dist/
+.DS_Store

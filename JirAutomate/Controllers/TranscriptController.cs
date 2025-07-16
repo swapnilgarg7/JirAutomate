@@ -10,7 +10,7 @@ public class TranscriptController : ControllerBase
 
     private static readonly Dictionary<string, string> NameToEmail = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["swapnil"] = "swapnilgarg810@gmail.com",
+        ["swapnil"] = "swapnilgarg810@gmail.com"
     };
 
     public TranscriptController(GeminiService geminiService, JiraService jiraService)
@@ -36,9 +36,20 @@ public class TranscriptController : ControllerBase
             ticket.ProjectKey ??= "CRM";
             ticket.IssueType ??= "Task";
             if (!string.IsNullOrWhiteSpace(ticket.AssigneeName) &&
-        NameToEmail.TryGetValue(ticket.AssigneeName.Trim(), out var email))
+        NameToEmail.TryGetValue(ticket.AssigneeName.Trim().ToLower(), out var email))
             {
                 ticket.AssigneeEmail = email;
+            }
+            string _email = ticket.AssigneeEmail.Trim().ToLower();
+            string _name="";
+            if (_email.EndsWith("@example.com"))
+            {
+                _name = _email.Substring(0, _email.Length - "@example.com".Length);
+            }
+            if (!string.IsNullOrWhiteSpace(_name) &&
+        NameToEmail.TryGetValue(_name, out var emailfinal))
+            {
+                ticket.AssigneeEmail = emailfinal;
             }
             ticket.AssigneeEmail ??= "";
             ticket.Summary ??= "Sample Ticket";

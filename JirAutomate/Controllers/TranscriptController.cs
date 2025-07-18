@@ -1,5 +1,6 @@
 ﻿using JirAutomate.Services;
 using Microsoft.AspNetCore.Mvc;
+using UglyToad.PdfPig;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -25,8 +26,22 @@ public class TranscriptController : ControllerBase
         if (file == null || file.Length == 0)
             return BadRequest("No file uploaded.");
 
-        using var reader = new StreamReader(file.OpenReadStream());
-        var transcript = await reader.ReadToEndAsync();
+        string transcript = "";
+
+        if (file.ContentType == "application/pdf" || file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+        {
+            using var stream = file.OpenReadStream();
+            using var pdf = PdfDocument.Open(stream);
+            foreach (var page in pdf.GetPages())
+            {
+                transcript += page.Text + "\n";
+            }
+        }
+        else
+        {
+            using var reader = new StreamReader(file.OpenReadStream());
+            transcript = await reader.ReadToEndAsync();
+        }
 
         var tickets = await _geminiService.ExtractTicketsFromTranscript(transcript);
 

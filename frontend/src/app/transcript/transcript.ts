@@ -13,6 +13,10 @@ import { MatCardModule } from '@angular/material/card';
   styleUrl: './transcript.scss'
 })
 export class Transcript {
+  logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  }
   file!: File;
   tickets: TicketRequest[] = [];
   loading = false;

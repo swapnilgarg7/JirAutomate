@@ -37,7 +37,11 @@ public class AuthController : ControllerBase
 
         user.PasswordHash = HashPassword(user.PasswordHash);
         _userService.Create(user);
-        return Ok("User registered");
+        // Fetch the user again to get the generated Id
+        var createdUser = _userService.GetByEmail(user.Email);
+        Console.WriteLine($"[REGISTER] Created user: Email={createdUser.Email}, Id={createdUser.Id}");
+        var token = GenerateJwtToken(createdUser);
+        return Ok(new { token });
     }
 
     [HttpPost("login")]
@@ -47,7 +51,10 @@ public class AuthController : ControllerBase
         if (user == null || !VerifyPassword(loginUser.PasswordHash, user.PasswordHash))
             return Unauthorized("Invalid credentials");
 
-        var token = GenerateJwtToken(user);
+        // Fetch the user again to ensure Id is set (in case of legacy data)
+        var dbUser = _userService.GetByEmail(loginUser.Email);
+        Console.WriteLine($"[LOGIN] User: Email={dbUser.Email}, Id={dbUser.Id}");
+        var token = GenerateJwtToken(dbUser);
         return Ok(new { token });
     }
 

@@ -17,6 +17,10 @@ export class Auth {
   password = '';
   errorMessage = '';
   isLoading = false;
+  jiraDomain = '';
+  projectKey = '';
+  jiraEmail = '';
+  jiraApi = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -26,7 +30,7 @@ export class Auth {
   }
 
   submit() {
-    if (!this.email || !this.password) {
+    if (!this.email || !this.password || (!this.isLogin && (!this.jiraDomain || !this.projectKey || !this.jiraEmail || !this.jiraApi))) {
       this.errorMessage = 'Please fill in all fields';
       return;
     }
@@ -35,7 +39,16 @@ export class Auth {
     this.errorMessage = '';
     
     const endpoint = this.isLogin ? 'login' : 'register';
-    const body = { email: this.email, passwordHash: this.password };
+    const body = this.isLogin
+      ? { email: this.email, passwordHash: this.password }
+      : {
+          email: this.email,
+          passwordHash: this.password,
+          jiraDomain: this.jiraDomain,
+          projectKey: this.projectKey,
+          jiraEmail: this.jiraEmail,
+          jiraApi: this.jiraApi
+        };
 
     this.http.post<any>(`${environment.apiUrl}/auth/${endpoint}`, body)
       .subscribe({

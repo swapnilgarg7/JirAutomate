@@ -6,20 +6,15 @@ using System.Text.Json;
 public class JiraService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _email;
-    private readonly string _apiToken;
 
     public JiraService(IHttpClientFactory factory)
     {
-        DotNetEnv.Env.Load();
         _httpClient = factory.CreateClient();
-        _email = Environment.GetEnvironmentVariable("JIRA_EMAIL") ?? throw new Exception("Missing JIRA_EMAIL");
-        _apiToken = Environment.GetEnvironmentVariable("JIRA_API") ?? throw new Exception("Missing JIRA_API");
     }
 
-    public async Task<string?> GetAccountIdFromEmail(string domain, string email)
+    public async Task<string?> GetAccountIdFromEmail(string domain, string email, string jiraEmail, string jiraApi)
     {
-        var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_email}:{_apiToken}"));
+        var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{jiraEmail}:{jiraApi}"));
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
 
         var url = $"https://{domain}/rest/api/3/user/search?query={email}";
@@ -30,9 +25,9 @@ public class JiraService
         return doc.RootElement.EnumerateArray().FirstOrDefault().GetProperty("accountId").GetString();
     }
 
-    public async Task<string> CreateTicket(TicketRequest request)
+    public async Task<string> CreateTicket(TicketRequest request, string jiraEmail, string jiraApi)
     {
-        var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_email}:{_apiToken}"));
+        var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{jiraEmail}:{jiraApi}"));
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
 
         string? accountId = null;
@@ -41,7 +36,7 @@ public class JiraService
         {
             try
             {
-                accountId = await GetAccountIdFromEmail(request.JiraDomain, request.AssigneeEmail);
+                accountId = await GetAccountIdFromEmail(request.JiraDomain, request.AssigneeEmail, jiraEmail, jiraApi);
             }
             catch
             {
@@ -74,5 +69,4 @@ public class JiraService
 
         return responseBody;
     }
-
 }

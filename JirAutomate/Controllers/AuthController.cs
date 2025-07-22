@@ -25,6 +25,13 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register([FromBody] User user)
     {
+        if (string.IsNullOrWhiteSpace(user.JiraDomain) ||
+            string.IsNullOrWhiteSpace(user.ProjectKey) ||
+            string.IsNullOrWhiteSpace(user.JiraEmail) ||
+            string.IsNullOrWhiteSpace(user.JiraApi))
+        {
+            return BadRequest("All Jira fields are required");
+        }
         if (_userService.GetByEmail(user.Email) != null)
             return BadRequest("User already exists");
 

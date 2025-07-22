@@ -56,6 +56,38 @@
         </div>
       </div>
 
+      <div *ngIf="!isLogin">
+        <div class="form-group">
+          <label for="jiraDomain">Jira Domain</label>
+          <input type="text" id="jiraDomain" [(ngModel)]="jiraDomain" name="jiraDomain" placeholder="your-domain.atlassian.net" required #jiraDomainInput="ngModel" class="form-input" [class.error]="jiraDomainInput.invalid && jiraDomainInput.touched" />
+          <div *ngIf="jiraDomainInput.invalid && jiraDomainInput.touched" class="error-message">
+            <span *ngIf="jiraDomainInput.errors?.['required']">Jira Domain is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="projectKey">Project Key</label>
+          <input type="text" id="projectKey" [(ngModel)]="projectKey" name="projectKey" placeholder="e.g. CRM" required #projectKeyInput="ngModel" class="form-input" [class.error]="projectKeyInput.invalid && projectKeyInput.touched" />
+          <div *ngIf="projectKeyInput.invalid && projectKeyInput.touched" class="error-message">
+            <span *ngIf="projectKeyInput.errors?.['required']">Project Key is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="jiraEmail">Jira Email</label>
+          <input type="email" id="jiraEmail" [(ngModel)]="jiraEmail" name="jiraEmail" placeholder="Jira account email" required #jiraEmailInput="ngModel" class="form-input" [class.error]="jiraEmailInput.invalid && jiraEmailInput.touched" />
+          <div *ngIf="jiraEmailInput.invalid && jiraEmailInput.touched" class="error-message">
+            <span *ngIf="jiraEmailInput.errors?.['required']">Jira Email is required</span>
+            <span *ngIf="jiraEmailInput.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="jiraApi">Jira API Token</label>
+          <input type="text" id="jiraApi" [(ngModel)]="jiraApi" name="jiraApi" placeholder="Jira API Token" required #jiraApiInput="ngModel" class="form-input" [class.error]="jiraApiInput.invalid && jiraApiInput.touched" />
+          <div *ngIf="jiraApiInput.invalid && jiraApiInput.touched" class="error-message">
+            <span *ngIf="jiraApiInput.errors?.['required']">Jira API Token is required</span>
+          </div>
+        </div>
+      </div>
+
       <div *ngIf="errorMessage" class="error-message general-error">
         {{ errorMessage }}
       </div>

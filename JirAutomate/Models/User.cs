@@ -18,4 +18,16 @@ public class User
     [BsonElement("role")]
     public string Role { get; set; } = "user";
 
+    [BsonElement("jiraDomain")]
+    public string JiraDomain { get; set; } = string.Empty;
+
+    [BsonElement("projectKey")]
+    public string ProjectKey { get; set; } = string.Empty;
+
+    [BsonElement("jiraEmail")]
+    public string JiraEmail { get; set; } = string.Empty;
+
+    [BsonElement("jiraApi")]
+    public string JiraApi { get; set; } = string.Empty;
+
 }

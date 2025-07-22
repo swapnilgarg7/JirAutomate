@@ -1,6 +1,7 @@
 # JirAutomate
 
 This app lets users upload a meeting transcript, extract actionable tasks using Google Gemini AI, and automatically create Jira tickets — all from a web UI built in Angular + .NET.
+It also includes Ticket Management Dashboard to edit extracted tickets, change assignees. etc..
 
 ---
 
@@ -11,6 +12,7 @@ This app lets users upload a meeting transcript, extract actionable tasks using 
 - ✅ Google Gemini API (LLM)
 - ✅ Jira Cloud REST API
 - ✅ MongoDB
+- ✅ JWT
 
 ---
 
@@ -46,8 +48,6 @@ dotnet run
 
 ```
 GEMINI_API=your_google_api_key
-JIRA_EMAIL=your_email@domain.com
-JIRA_API=your_jira_api_token
 ```
 
 #### ✅ Runs at: `http://localhost:5208`
@@ -76,35 +76,18 @@ export const environment = {
 
 ## 📦 API Endpoints
 
-| Method | Endpoint                  | Description                   |
-|--------|---------------------------|-------------------------------|
-| POST   | `/api/transcript/upload`  | Upload meeting transcript     |
-| POST   | `/api/jira/create-ticket` | Create Jira ticket manually   |
-
----
-
-## 📁 Project Structure
-
-```
-JirAutomate/               # .NET backend
-└── Services/              # Gemini + Jira logic
-└── Controllers/           # API endpoints
-└── Models/                # TicketRequest model
-
-frontend/            # Angular frontend
-└── transcripts.ts         # Main logic
-└── transcripts.html       # Upload + preview UI
-└── jira.service.ts        # API integration
-```
+| Method | Endpoint                  | Description                         |
+|--------|---------------------------|-------------------------------------|
+| POST   | `/api/transcript/upload`  | Upload meeting transcript           |
+| POST   | `/api/jira/create-ticket` | Create Jira ticket manually         |
+| POST   | `/api/auth/register`      | Register a user with Jira details   |
+| POST   | `/api/auth/login`         | Create Jira ticket manually         |
 
 ---
 
 ## ✨ Coming Soon
 
-- Better Frontend
-- User Authentication to store details
-- MongoDB Integration
+- Enter names and atlassian emails to assign assignees to the tickets
 - Other files support
-- Ticket Management Dashboard
 
 ---
